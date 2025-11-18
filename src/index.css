@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Times New Roman", Times, serif;
+  --font-sans: "Times New Roman", Times, serif;
+  /* Changed to Times New Roman per user feedback */
+
+  --color-paper: #f9f9f9;
+  --color-heading: #333333;
+  --color-border: #d1d5db;
+}
+
+body {
+  background-color: var(--color-paper);
+  font-family: var(--font-serif);
+  color: #000;
+  line-height: 1.5;
+}
+
+/* Custom Utilities for Legislation Layout */
+@layer utilities {
+  .hanging-indent {
+    text-indent: -1.5em;
+    padding-left: 1.5em;
+  }
+}
+
+@media print {
+  body {
+    background-color: white;
+  }
+
+  /* Hide sidebar and XML preview during print */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Ensure the editor takes full width */
+  .print-full-width {
+    width: 100% !important;
+    border: none !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+}
