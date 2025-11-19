@@ -88,15 +88,35 @@ const Heading = ({ node, path, parentType }: { node: LegislationNode; path: numb
     return <EditableText node={node} path={path} tagName="h3" className={className} />;
 };
 
-const Title = ({ node, path }: { node: LegislationNode; path: number[] }) => <EditableText node={node} path={path} tagName="h1" className="font-serif font-bold text-3xl mb-4 text-heading inline-block min-w-[100px]" />;
+const Title = ({ node, path }: { node: LegislationNode; path: number[] }) => <EditableText node={node} path={path} tagName="h1" className="font-serif font-bold text-3xl mb-4 text-heading block w-full text-center" />;
 
 const Text = ({ node, path, parentType }: { node: LegislationNode; path: number[]; parentType?: NodeType }) => {
     let className = "";
     if (['subsection', 'para', 'subpara', 'subsubpara', 'def-para'].includes(parentType || '')) {
         className += " flex-1 block";
     }
+    if (parentType === 'metadata-bill') {
+        className += " text-center block font-serif";
+    }
     return <EditableText node={node} path={path} tagName="span" className={className} />;
 };
+
+const MetadataRow = ({ children }: { children: React.ReactNode }) => (
+    <div className="contents">
+        {children}
+    </div>
+);
+
+const MetadataKey = ({ node, path }: { node: LegislationNode; path: number[] }) => {
+    if (node.attributes?.readOnly === 'true') {
+        return <span className="font-serif text-right">{node.content}</span>;
+    }
+    return <EditableText node={node} path={path} tagName="span" className="font-serif text-right" />;
+};
+
+const MetadataValue = ({ node, path }: { node: LegislationNode; path: number[] }) => (
+    <EditableText node={node} path={path} tagName="span" className="font-serif text-left" />
+);
 
 const Body = ({ children }: { children: React.ReactNode }) => <div>{children}</div>;
 
@@ -225,13 +245,80 @@ export const NodeRenderer: React.FC<NodeRendererProps & { parentType?: NodeType 
         </div>
     );
 
+    const insertActOptions = () => {
+        const metadataNode: LegislationNode = {
+            type: 'metadata-act',
+            children: [
+                {
+                    type: 'metadata-row',
+                    children: [
+                        { type: 'metadata-key', content: 'Public Act' },
+                        { type: 'metadata-value', content: '2019 No 58' }
+                    ]
+                },
+                {
+                    type: 'metadata-row',
+                    children: [
+                        { type: 'metadata-key', content: 'Date of assent', attributes: { readOnly: 'true' } },
+                        { type: 'metadata-value', content: '28 October 2019' }
+                    ]
+                },
+                {
+                    type: 'metadata-row',
+                    children: [
+                        { type: 'metadata-key', content: 'Commencement', attributes: { readOnly: 'true' } },
+                        { type: 'metadata-value', content: 'see section 2' }
+                    ]
+                }
+            ]
+        };
+        // Insert at end of cover children
+        dispatch({ type: 'INSERT_NODE', payload: { path: [...path, node.children?.length || 0], node: metadataNode } });
+    };
+
+    const insertBillOptions = () => {
+        const metadataNode: LegislationNode = {
+            type: 'metadata-bill',
+            children: [
+                { type: 'text', content: "Member's Bill" }
+            ]
+        };
+        // Insert at end of cover children
+        dispatch({ type: 'INSERT_NODE', payload: { path: [...path, node.children?.length || 0], node: metadataNode } });
+    };
+
     switch (node.type) {
         case 'act':
             return <Act node={node}>{renderChildren('act')}</Act>;
         case 'cover':
-            return <Container className="mb-8 border-b border-gray-300 pb-4">{renderChildren('cover')}</Container>;
+            const hasMetadata = node.children?.some(c => c.type === 'metadata-act' || c.type === 'metadata-bill');
+            return (
+                <Container className="mb-8">
+                    {renderChildren('cover')}
+                    {!hasMetadata && (
+                        <div className="flex justify-center gap-4 mt-4 no-print">
+                            <button onClick={insertActOptions} className="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded text-gray-700">
+                                Insert Act Options
+                            </button>
+                            <button onClick={insertBillOptions} className="text-xs bg-gray-200 hover:bg-gray-300 px-2 py-1 rounded text-gray-700">
+                                Insert Bill Options
+                            </button>
+                        </div>
+                    )}
+                </Container>
+            );
         case 'title':
             return <Title node={node} path={path} />;
+        case 'metadata-act':
+            return <div className="mt-4 mb-8 grid grid-cols-2 gap-x-6 w-fit mx-auto text-lg">{renderChildren('metadata-act')}</div>;
+        case 'metadata-bill':
+            return <div className="mt-4 mb-8">{renderChildren('metadata-bill')}</div>;
+        case 'metadata-row':
+            return <MetadataRow>{renderChildren('metadata-row')}</MetadataRow>;
+        case 'metadata-key':
+            return <MetadataKey node={node} path={path} />;
+        case 'metadata-value':
+            return <MetadataValue node={node} path={path} />;
         case 'body':
             return <Body>{renderChildren('body')}</Body>;
         case 'part':

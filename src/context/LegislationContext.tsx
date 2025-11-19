@@ -7,7 +7,8 @@ type Action =
     | { type: 'UPDATE_NODE_CONTENT'; payload: { path: number[]; content: string } }
     | { type: 'ADD_NODE'; payload: { type: NodeType } }
     | { type: 'SELECT_NODE'; payload: number[] }
-    | { type: 'MOVE_NODE'; payload: { sourcePath: number[]; targetPath: number[]; position: 'before' | 'after' | 'inside' } };
+    | { type: 'MOVE_NODE'; payload: { sourcePath: number[]; targetPath: number[]; position: 'before' | 'after' | 'inside' } }
+    | { type: 'INSERT_NODE'; payload: { path: number[]; node: LegislationNode } };
 
 const LegislationContext = createContext<{ state: LegislationState; dispatch: Dispatch<Action> } | undefined>(undefined);
 
@@ -43,6 +44,19 @@ const legislationReducer = (state: LegislationState, action: Action): Legislatio
             if (node) {
                 node.content = content;
             }
+            return newState;
+        }
+        case 'INSERT_NODE': {
+            const { path, node } = action.payload;
+            const newState = JSON.parse(JSON.stringify(state));
+            const { parent, index } = findParent(newState, path);
+
+            if (parent && parent.children) {
+                parent.children.splice(index, 0, node);
+            } else if (parent) {
+                parent.children = [node];
+            }
+
             return newState;
         }
         case 'ADD_NODE': {

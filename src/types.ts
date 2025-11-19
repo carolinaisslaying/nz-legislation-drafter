@@ -1,4 +1,4 @@
-export type NodeType = 'act' | 'cover' | 'title' | 'body' | 'part' | 'subpart' | 'crosshead' | 'section' | 'subsection' | 'para' | 'subpara' | 'subsubpara' | 'def-para' | 'def-term' | 'label' | 'heading' | 'text';
+export type NodeType = 'act' | 'cover' | 'title' | 'body' | 'part' | 'subpart' | 'crosshead' | 'section' | 'subsection' | 'para' | 'subpara' | 'subsubpara' | 'def-para' | 'def-term' | 'label' | 'heading' | 'text' | 'metadata-act' | 'metadata-bill' | 'metadata-row' | 'metadata-key' | 'metadata-value';
 
 export interface LegislationNode {
     type: NodeType;
