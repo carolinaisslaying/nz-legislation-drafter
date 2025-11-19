@@ -23,8 +23,12 @@ function App() {
             </div>
 
             <div className="flex-1 flex flex-col h-full">
-                <div className="bg-gray-200 border-b border-gray-300 p-2 flex justify-end no-print">
-                    <label className="flex items-center space-x-2 text-sm">
+                <div className="bg-yellow-50 border-b border-gray-300 p-2 flex justify-between items-center no-print">
+                    <div className="flex items-center space-x-2 text-base text-gray-700 font-sans">
+                        <span className="font-semibold">⚠️ Demonstration Only:</span>
+                        <span>Not actively maintained. Written almost exclusively by Gemini 3.0 Pro (High) with Antigravity as a test.</span>
+                    </div>
+                    <label className="flex items-center space-x-2 text-sm font-sans">
                         <input
                             type="checkbox"
                             checked={showXML}
