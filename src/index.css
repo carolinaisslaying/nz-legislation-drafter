@@ -41,4 +41,32 @@ body {
     overflow: visible !important;
     height: auto !important;
   }
+
+  /* Hide selection indicators (blue rings and backgrounds) */
+  .ring-2,
+  .ring-blue-500,
+  .bg-blue-100 {
+    box-shadow: none !important;
+    background-color: transparent !important;
+    outline: none !important;
+  }
+
+  /* Additional selector to ensure all selection styles are removed */
+  [class*="ring-"],
+  [class*="bg-blue"] {
+    box-shadow: none !important;
+    background-color: transparent !important;
+  }
+
+  /* Page setup for PDF */
+  @page {
+    margin: 1in 1in 0.75in 1in;
+
+    /* top, right, bottom, left */
+    @bottom-right {
+      content: counter(page);
+      font-size: 10pt;
+      font-family: "Times New Roman", Times, serif;
+    }
+  }
 }
