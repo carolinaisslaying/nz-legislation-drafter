@@ -9,7 +9,8 @@ type Action =
     | { type: 'SELECT_NODE'; payload: number[] }
     | { type: 'MOVE_NODE'; payload: { sourcePath: number[]; targetPath: number[]; position: 'before' | 'after' | 'inside' } }
     | { type: 'INSERT_NODE'; payload: { path: number[]; node: LegislationNode } }
-    | { type: 'DELETE_NODE'; payload: { path: number[] } };
+    | { type: 'DELETE_NODE'; payload: { path: number[] } }
+    | { type: 'IMPORT_STATE'; payload: LegislationNode };
 
 const LegislationContext = createContext<{ state: LegislationState; dispatch: Dispatch<Action> } | undefined>(undefined);
 
@@ -35,6 +36,10 @@ const findParent = (root: LegislationNode, path: number[]): { parent: Legislatio
 
 const legislationReducer = (state: LegislationState, action: Action): LegislationState => {
     switch (action.type) {
+        case 'IMPORT_STATE': {
+            // Replace entire state with imported data, clear selection
+            return { ...action.payload, selectedPath: undefined };
+        }
         case 'SELECT_NODE': {
             return { ...state, selectedPath: action.payload };
         }

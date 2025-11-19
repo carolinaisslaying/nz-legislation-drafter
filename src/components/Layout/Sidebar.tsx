@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLegislation } from '../../context/LegislationContext';
 import { generateXML } from '../../utils/xmlGenerator';
+import { parseXML } from '../../utils/xmlParser';
 import { NodeType } from '../../types';
 import { FaPlus } from 'react-icons/fa';
 
@@ -10,6 +11,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ onPrint }) => {
     const { state, dispatch } = useLegislation();
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     const handleAdd = (type: NodeType) => {
         dispatch({ type: 'ADD_NODE', payload: { type } });
@@ -26,6 +28,28 @@ export const Sidebar: React.FC<SidebarProps> = ({ onPrint }) => {
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+    };
+
+    const handleImportClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        try {
+            const text = await file.text();
+            const importedState = parseXML(text);
+            dispatch({ type: 'IMPORT_STATE', payload: importedState });
+
+            // Reset file input
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+        } catch (error) {
+            alert('Failed to import XML: ' + (error instanceof Error ? error.message : 'Unknown error'));
+        }
     };
 
     return (
@@ -77,6 +101,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ onPrint }) => {
             </div>
 
             <div className="mt-auto space-y-2">
+                {/* Hidden file input */}
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".xml"
+                    onChange={handleFileChange}
+                    className="hidden"
+                />
+
+                <button
+                    onClick={handleImportClick}
+                    className="w-full px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 font-bold"
+                >
+                    Import XML
+                </button>
                 <button
                     onClick={handleExport}
                     className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 font-bold"
