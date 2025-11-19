@@ -68,7 +68,7 @@ export const createNode = (type: NodeType): LegislationNode => {
         ];
     } else if (type === 'crosshead') {
         baseNode.children = [
-            { type: 'heading', content: 'Cross Heading' }
+            { type: 'heading', content: 'Cross-heading' }
         ];
     } else if (type === 'section') {
         baseNode.children = [

@@ -72,7 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onPrint }) => {
                     onClick={() => handleAdd('crosshead')}
                     className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm flex items-center"
                 >
-                    <FaPlus className="mr-2 text-black" /> Add Cross Heading
+                    <FaPlus className="mr-2 text-black" /> Add Cross-heading
                 </button>
                 <button
                     onClick={() => handleAdd('section')}
