@@ -1,32 +1,37 @@
-// Utility for smart numbering
+import { LegislationNode, NodeType } from '../types';
 
-export const renumberNodes = (nodes, type) => {
+export const renumberNodes = (nodes: LegislationNode[], type: NodeType): LegislationNode[] => {
     let counter = 1;
     return nodes.map(node => {
         if (node.type === type) {
             // Find the label child
-            const labelIndex = node.children.findIndex(c => c.type === 'label');
-            if (labelIndex !== -1) {
+            const labelIndex = node.children?.findIndex((c: LegislationNode) => c.type === 'label');
+
+            // Even if label doesn't exist, we might need to create it or just skip? 
+            // For now assuming structure is correct from createNode.
+
+            if (labelIndex !== undefined && labelIndex !== -1 && node.children) {
                 const labelNode = node.children[labelIndex];
                 // Only renumber if auto.number is yes or not set (defaulting to yes for this logic)
-                // For now, we force renumbering for simplicity
-                if (labelNode.attributes && labelNode.attributes['auto.number'] !== 'no') {
+                if (!labelNode.attributes || labelNode.attributes['auto.number'] !== 'no') {
                     // Create a new label node with updated content
-                    const newLabel = { ...labelNode, content: String(counter) };
+                    let newContent = String(counter);
+
                     if (type === 'subsection') {
-                        newLabel.content = `(${counter})`;
+                        newContent = `(${counter})`;
                     } else if (type === 'para') {
                         // Convert 1 -> a, 2 -> b, etc.
-                        newLabel.content = `(${String.fromCharCode(96 + counter)})`;
+                        newContent = `(${String.fromCharCode(96 + counter)})`;
                     } else if (type === 'subpara') {
                         // Roman numerals: i, ii, iii, iv, v
                         const romans = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x'];
-                        newLabel.content = `(${romans[counter - 1] || counter})`;
+                        newContent = `(${romans[counter - 1] || counter})`;
                     } else if (type === 'subsubpara') {
                         // Uppercase letters: A, B, C
-                        newLabel.content = `(${String.fromCharCode(64 + counter)})`;
+                        newContent = `(${String.fromCharCode(64 + counter)})`;
                     }
 
+                    const newLabel = { ...labelNode, content: newContent };
                     const newChildren = [...node.children];
                     newChildren[labelIndex] = newLabel;
 
@@ -34,21 +39,18 @@ export const renumberNodes = (nodes, type) => {
                     return { ...node, children: newChildren };
                 }
             }
+            // If we found the node type but skipped renumbering (e.g. auto.number=no), we still increment?
+            // Usually manual numbering implies it's outside the sequence or fixed. 
+            // For now, let's assume we increment only if we renumbered, OR if we want to skip a number.
+            // But typically manual numbers are distinct. Let's increment counter to keep sequence for others.
             counter++;
-        }
-
-        // Recursive renumbering for children if needed (e.g. subsections inside sections)
-        if (node.children) {
-            // This is a bit complex because we need to know what to renumber inside.
-            // For now, let's just handle the top-level renumbering of the list passed in.
-            return node;
         }
         return node;
     });
 };
 
-export const createNode = (type) => {
-    const baseNode = {
+export const createNode = (type: NodeType): LegislationNode => {
+    const baseNode: LegislationNode = {
         type,
         attributes: { id: `${type}_${Date.now()}` }, // Simple unique ID
         children: []

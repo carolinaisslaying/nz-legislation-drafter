@@ -1,6 +1,6 @@
-// Initial State for the Legislation Drafter
+import { LegislationNode } from '../types';
 
-export const initialLegislationState = {
+export const initialLegislationState: LegislationNode = {
     type: 'act',
     attributes: {
         'date.assent': new Date().toISOString().split('T')[0],

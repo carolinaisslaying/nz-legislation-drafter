@@ -1,11 +1,16 @@
 import React from 'react';
 import { useLegislation } from '../../context/LegislationContext';
 import { generateXML } from '../../utils/xmlGenerator';
+import { NodeType } from '../../types';
 
-export const Sidebar = ({ onPrint }) => {
+interface SidebarProps {
+    onPrint?: () => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ onPrint }) => {
     const { state, dispatch } = useLegislation();
 
-    const handleAdd = (type) => {
+    const handleAdd = (type: NodeType) => {
         dispatch({ type: 'ADD_NODE', payload: { type } });
     };
 
