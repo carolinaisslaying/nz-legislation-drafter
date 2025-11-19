@@ -2,6 +2,7 @@ import React from 'react';
 import { useLegislation } from '../../context/LegislationContext';
 import { generateXML } from '../../utils/xmlGenerator';
 import { NodeType } from '../../types';
+import { FaPlus } from 'react-icons/fa';
 
 interface SidebarProps {
     onPrint?: () => void;
@@ -33,45 +34,45 @@ export const Sidebar: React.FC<SidebarProps> = ({ onPrint }) => {
             <div className="space-y-2 overflow-y-auto max-h-[60vh]">
                 <button
                     onClick={() => handleAdd('part')}
-                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm"
+                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm flex items-center"
                 >
-                    + Add Part
+                    <FaPlus className="mr-2 text-black" /> Add Part
                 </button>
                 <button
                     onClick={() => handleAdd('subpart')}
-                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm"
+                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm flex items-center"
                 >
-                    + Add Subpart
+                    <FaPlus className="mr-2 text-black" /> Add Subpart
                 </button>
                 <button
                     onClick={() => handleAdd('crosshead')}
-                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm"
+                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm flex items-center"
                 >
-                    + Add Cross Heading
+                    <FaPlus className="mr-2 text-black" /> Add Cross Heading
                 </button>
                 <button
                     onClick={() => handleAdd('section')}
-                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm"
+                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm flex items-center"
                 >
-                    + Add Section
+                    <FaPlus className="mr-2 text-black" /> Add Section
                 </button>
                 <button
                     onClick={() => handleAdd('subsection')}
-                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm"
+                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm flex items-center"
                 >
-                    + Add Subsection
+                    <FaPlus className="mr-2 text-black" /> Add Subsection
                 </button>
                 <button
                     onClick={() => handleAdd('para')}
-                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm"
+                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm flex items-center"
                 >
-                    + Add Paragraph
+                    <FaPlus className="mr-2 text-black" /> Add Paragraph
                 </button>
                 <button
                     onClick={() => handleAdd('subpara')}
-                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm"
+                    className="w-full text-left px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-50 text-sm flex items-center"
                 >
-                    + Add Subparagraph
+                    <FaPlus className="mr-2 text-black" /> Add Subparagraph
                 </button>
             </div>
 
