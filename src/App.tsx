@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { Sidebar } from './components/Layout/Sidebar';
 import { NodeRenderer } from './components/Editor/NodeRenderer';
 import { useLegislation } from './context/LegislationContext';
@@ -39,10 +41,23 @@ function App() {
                         <NodeRenderer node={state} />
                     </div>
 
-                    {/* XML Preview */}
+                    {/* XML Preview with Syntax Highlighting */}
                     {showXML && (
-                        <div className="w-1/2 bg-gray-900 text-gray-100 p-4 overflow-y-auto font-mono text-sm no-print">
-                            <pre className="whitespace-pre-wrap break-words">{xmlOutput}</pre>
+                        <div className="w-1/2 overflow-y-auto no-print" style={{ backgroundColor: '#1a202c' }}>
+                            <SyntaxHighlighter
+                                language="xml"
+                                style={vscDarkPlus}
+                                customStyle={{
+                                    margin: 0,
+                                    padding: '1rem',
+                                    fontSize: '0.875rem',
+                                    backgroundColor: '#1a202c',
+                                }}
+                                wrapLines={true}
+                                lineProps={{ style: { wordBreak: 'break-all', whiteSpace: 'pre-wrap' } }}
+                            >
+                                {xmlOutput}
+                            </SyntaxHighlighter>
                         </div>
                     )}
                 </div>
