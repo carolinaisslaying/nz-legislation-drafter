@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaTrash } from 'react-icons/fa';
 import { Act } from './Act';
 import { Part } from './Part';
 import { Section } from './Section';
@@ -224,6 +225,32 @@ export const NodeRenderer: React.FC<NodeRendererProps & { parentType?: NodeType 
         });
     };
 
+    // Protected node types that cannot be deleted
+    const protectedTypes: NodeType[] = ['act', 'cover', 'title', 'body'];
+    const isDeletable = !protectedTypes.includes(node.type) && path.length > 0;
+
+    const handleDelete = (e?: React.MouseEvent) => {
+        if (e) {
+            e.stopPropagation();
+        }
+        if (isDeletable) {
+            dispatch({ type: 'DELETE_NODE', payload: { path } });
+        }
+    };
+
+    // Keyboard event handler for delete
+    React.useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (isSelected && isDeletable && (e.key === 'Delete' || e.key === 'Backspace')) {
+                e.preventDefault();
+                handleDelete();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isSelected, isDeletable, path]);
+
     const Container = ({ children, className }: { children: React.ReactNode; className?: string }) => (
         <div
             onClick={handleSelect}
@@ -241,6 +268,15 @@ export const NodeRenderer: React.FC<NodeRendererProps & { parentType?: NodeType 
             {children}
             {dragOverPosition === 'after' && (
                 <div className="absolute bottom-0 left-0 right-0 h-1 bg-blue-500 pointer-events-none z-10" />
+            )}
+            {isSelected && isDeletable && (
+                <button
+                    onClick={handleDelete}
+                    className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded hover:bg-red-600 no-print z-20"
+                    title="Delete block (Delete/Backspace)"
+                >
+                    <FaTrash className="w-3 h-3" />
+                </button>
             )}
         </div>
     );

@@ -8,7 +8,8 @@ type Action =
     | { type: 'ADD_NODE'; payload: { type: NodeType } }
     | { type: 'SELECT_NODE'; payload: number[] }
     | { type: 'MOVE_NODE'; payload: { sourcePath: number[]; targetPath: number[]; position: 'before' | 'after' | 'inside' } }
-    | { type: 'INSERT_NODE'; payload: { path: number[]; node: LegislationNode } };
+    | { type: 'INSERT_NODE'; payload: { path: number[]; node: LegislationNode } }
+    | { type: 'DELETE_NODE'; payload: { path: number[] } };
 
 const LegislationContext = createContext<{ state: LegislationState; dispatch: Dispatch<Action> } | undefined>(undefined);
 
@@ -55,6 +56,26 @@ const legislationReducer = (state: LegislationState, action: Action): Legislatio
                 parent.children.splice(index, 0, node);
             } else if (parent) {
                 parent.children = [node];
+            }
+
+            return newState;
+        }
+        case 'DELETE_NODE': {
+            const { path } = action.payload;
+
+            // Prevent deletion of root structural nodes
+            if (path.length === 0) return state;
+
+            const newState = JSON.parse(JSON.stringify(state));
+            const { parent, index } = findParent(newState, path);
+
+            if (parent && parent.children && index >= 0) {
+                parent.children.splice(index, 1);
+            }
+
+            // Clear selection if we deleted the selected node
+            if (state.selectedPath?.join(',') === path.join(',')) {
+                newState.selectedPath = undefined;
             }
 
             return newState;
