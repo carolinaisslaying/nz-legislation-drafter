@@ -2,8 +2,7 @@
 
 @theme {
   --font-serif: "Times New Roman", Times, serif;
-  --font-sans: "Times New Roman", Times, serif;
-  /* Changed to Times New Roman per user feedback */
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
 
   --color-paper: #f9f9f9;
   --color-heading: #333333;

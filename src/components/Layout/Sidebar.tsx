@@ -28,7 +28,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onPrint }) => {
     };
 
     return (
-        <div className="w-64 bg-gray-100 border-r border-gray-300 p-4 flex flex-col h-screen">
+        <div className="w-64 bg-gray-100 border-r border-gray-300 p-4 flex flex-col h-screen font-sans">
             <h2 className="font-bold text-lg mb-4 text-gray-700">Structure</h2>
             <div className="space-y-2 overflow-y-auto max-h-[60vh]">
                 <button
